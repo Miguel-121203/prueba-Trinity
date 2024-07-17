@@ -2,10 +2,12 @@ package com.example.prueba.trinity.fs.Service;
 
 import com.example.prueba.trinity.fs.Entity.Producto;
 import com.example.prueba.trinity.fs.IService.IProductoService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class ProductoService implements IProductoService {
     @Override
     public List<Producto> findAll() {
@@ -29,6 +31,16 @@ public class ProductoService implements IProductoService {
 
     @Override
     public void delete(Long id) {
+
+    }
+
+    @Override
+    public void activateProducto(Long id) {
+
+    }
+
+    @Override
+    public void desactivateProducto(Long id) {
 
     }
 }

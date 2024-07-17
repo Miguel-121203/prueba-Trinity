@@ -28,12 +28,12 @@ public class ProductoController {
 
     @PostMapping()
     public Producto save(@RequestBody Producto producto) {
-        return service.save(Producto);
+        return service.save(producto);
     }
 
     @PutMapping("/{id}")
     public void update(@RequestBody Producto producto, @PathVariable Long id) {
-        service.update(Producto, id);
+        service.update(producto, id);
     }
 
     @DeleteMapping("{id}")

@@ -17,4 +17,8 @@ public interface IProductoService {
 
     void delete(Long id);
 
+    void activateProducto (Long id);
+
+    void desactivateProducto(Long id);
+
 }

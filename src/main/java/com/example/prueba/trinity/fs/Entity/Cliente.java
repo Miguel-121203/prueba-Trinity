@@ -1,46 +1,61 @@
 package com.example.prueba.trinity.fs.Entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 
 @Entity
 @Table(name = "clientes")
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Cliente {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @NotBlank(message = "El tipo de identificacion debe ser obligatorio")
     private String tipoId;
 
-    @Column(nullable = false)
+    @NotNull(message = "Numero de identificacion debe ser obligatorio")
     private int numId;
 
-    @Column(nullable = false)
+    @Size(min = 2, message = "El nombre debe tener al menos 2 caracteres")
+    @NotBlank(message = "El nombre es obligatorio")
     private String nombre;
 
-    @Column(nullable = false)
+    @Size(min = 2, message = "El apellido debe tener al menos 2 caracteres")
+    @NotBlank(message = "El apellido es obligatorio")
     private String apellido;
 
-    @Column(nullable = false)
+    @Email(message = "Correo debe ser valido y contar con su respectivo formato")
+    @NotBlank(message = "El correo electronico es obligatorio")
     private String correo;
 
-    @Column(nullable = false)
+    @Past(message = "La fecha de nacimiento debe de contar con fecha del pasado no con fechas futuras")
     private LocalDate fechaNacimiento;
 
-    @Column(nullable = false)
-    private LocalDate fechaCreacion;
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime fechaCreacion;
 
     @Column()
-    private LocalDate fechaModificacion;
+    private LocalDateTime fechaModificacion;
+
+    @PrePersist
+    protected void onCreate() {
+        this.fechaCreacion = LocalDateTime.now();
+        this.fechaModificacion = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.fechaModificacion = LocalDateTime.now();
+    }
 
 
 

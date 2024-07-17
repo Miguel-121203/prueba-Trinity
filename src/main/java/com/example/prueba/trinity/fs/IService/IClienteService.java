@@ -12,7 +12,7 @@ public interface IClienteService {
 
     Cliente save(Cliente cliente);
 
-    void update(Cliente cliente, Long id);
+    Cliente update(Cliente cliente, Long id);
 
     void delete(Long id);
 }
