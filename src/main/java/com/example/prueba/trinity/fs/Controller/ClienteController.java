@@ -19,13 +19,16 @@ public class ClienteController {
     private IClienteService service;
 
     @GetMapping()
-    public List<Cliente> findAll() {
-        return service.findAll();
+    public ResponseEntity<List<Cliente>> findAll() {
+        List<Cliente> clientes = service.findAll();
+        return ResponseEntity.ok(clientes);
     }
 
     @GetMapping("/{id}")
-    public Optional<Cliente> findById(@PathVariable Long id) {
-        return service.findById(id);
+    public ResponseEntity<Cliente> findById(@PathVariable Long id) {
+        return service.findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping()
@@ -35,13 +38,15 @@ public class ClienteController {
     }
 
     @PutMapping("/{id}")
-    public void update(@RequestBody Cliente cliente, @PathVariable Long id) {
-        service.update(cliente  , id);
+    public ResponseEntity<Cliente> update(@PathVariable Long id, @Valid @RequestBody Cliente cliente) {
+        Cliente updatedCliente = service.update(cliente, id);
+        return ResponseEntity.ok(updatedCliente);
     }
 
     @DeleteMapping("{id}")
-    public void delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         service.delete(id);
+        return ResponseEntity.noContent().build();
     }
 
 }
