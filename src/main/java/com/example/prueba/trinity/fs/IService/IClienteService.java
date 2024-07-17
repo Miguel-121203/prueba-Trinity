@@ -10,7 +10,7 @@ public interface IClienteService {
 
     Optional<Cliente> findById(Long id);
 
-    Cliente save(Cliente order);
+    Cliente save(Cliente cliente);
 
     void update(Cliente cliente, Long id);
 

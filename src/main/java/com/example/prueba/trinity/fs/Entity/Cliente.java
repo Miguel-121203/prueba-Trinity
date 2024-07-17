@@ -18,28 +18,28 @@ public class Cliente {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "tipo_de_id")
+    @Column(nullable = false)
     private String tipoId;
 
-    @Column(name = "numero_id")
+    @Column(nullable = false)
     private int numId;
 
-    @Column(name = "nombre")
+    @Column(nullable = false)
     private String nombre;
 
-    @Column(name = "apellido")
+    @Column(nullable = false)
     private String apellido;
 
-    @Column(name = "correo_electronico")
+    @Column(nullable = false)
     private String correo;
 
-    @Column(name = "fecha_nacimiento")
+    @Column(nullable = false)
     private LocalDate fechaNacimiento;
 
-    @Column(name = "fecha_creacion")
+    @Column(nullable = false)
     private LocalDate fechaCreacion;
 
-    @Column(name = "fecha_modificacion")
+    @Column()
     private LocalDate fechaModificacion;
 
 
