@@ -27,12 +27,12 @@ public class Producto {
     @Enumerated(EnumType.STRING)
     private TipoCuenta tipoCuenta;
 
-    @NotNull
     @Column(unique = true, length = 10)
     private String numeroCuenta;
 
     @NotNull
-    private String estado; // "ACTIVA", "INACTIVA", "CANCELADA"
+    @Enumerated(EnumType.STRING)
+    private EstadoCuenta estadoCuenta;
 
     @PositiveOrZero(message = "El saldo no puede ser negativo")
     private Double saldo;
@@ -51,14 +51,14 @@ public class Producto {
     @NotNull
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "cliente_id", nullable = false)
-    private Cliente clienteId;
+    private Cliente cliente;
 
     @PrePersist
     protected void onCreate() {
         this.fechaCreacion = LocalDateTime.now();
         this.fechaModificacion = LocalDateTime.now();
         if (this.tipoCuenta == TipoCuenta.AHORRO) {
-            this.estado = "activa";
+            this.estadoCuenta = EstadoCuenta.ACTIVA;
             this.numeroCuenta = generarNumeroCuenta("53");
         } else if (this.tipoCuenta == TipoCuenta.CORRIENTE) {
             this.numeroCuenta = generarNumeroCuenta("33");
@@ -73,5 +73,4 @@ public class Producto {
     private String generarNumeroCuenta(String prefijo) {
         return prefijo + String.format("%08d", (int) (Math.random() * 100000000));
     }
-
 }

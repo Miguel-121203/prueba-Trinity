@@ -7,14 +7,15 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class ClienteService implements IClienteService {
 
-    //Falta creacion de servicios personalizados
 
     @Autowired
     private IClienteRepository repository;
@@ -31,7 +32,16 @@ public class ClienteService implements IClienteService {
 
     @Override
     public Cliente save(@Valid Cliente cliente) {
+        if (!isOfAge(cliente.getFechaNacimiento())) {
+            throw new IllegalArgumentException("El cliente debe ser mayor de edad.");
+        }
+        cliente.setFechaCreacion(LocalDateTime.now());
+        cliente.setFechaModificacion(LocalDateTime.now());
         return repository.save(cliente);
+    }
+
+    private boolean isOfAge(LocalDate fechaNacimiento) {
+        return Period.between(fechaNacimiento, LocalDate.now()).getYears() >= 18;
     }
 
     @Override
