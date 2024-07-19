@@ -3,8 +3,9 @@ package com.example.prueba.trinity.fs.Service;
 import com.example.prueba.trinity.fs.Entity.Enum.EstadoCuenta;
 import com.example.prueba.trinity.fs.Entity.Enum.TipoCuenta;
 import com.example.prueba.trinity.fs.Entity.Producto;
-import com.example.prueba.trinity.fs.IRepository.IProductoReposotory;
+import com.example.prueba.trinity.fs.IRepository.IProductoRepository;
 import com.example.prueba.trinity.fs.IService.IProductoService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,16 +18,16 @@ public class ProductoService implements IProductoService {
 
 
     @Autowired
-    private IProductoReposotory reposotory;
+    private IProductoRepository repository;
 
     @Override
     public List<Producto> findAll() {
-        return reposotory.findAll();
+        return repository.findAll();
     }
 
     @Override
     public Optional<Producto> findById(Long id) {
-        return reposotory.findById(id);
+        return repository.findById(id);
     }
 
     @Override
@@ -41,14 +42,14 @@ public class ProductoService implements IProductoService {
             producto.setEstadoCuenta(EstadoCuenta.ACTIVA);
         }
 
-        return reposotory.save(producto);
+        return repository.save(producto);
     }
 
 
 
     @Override
     public Producto update(Producto producto, Long id) {
-        Optional<Producto> productoOpt = reposotory.findById(id);
+        Optional<Producto> productoOpt = repository.findById(id);
         if (productoOpt.isPresent()) {
             Producto productos = productoOpt.get();
             productos.setTipoCuenta(productos.getTipoCuenta());
@@ -56,7 +57,7 @@ public class ProductoService implements IProductoService {
             productos.setSaldo(productos.getSaldo());
             productos.setExentaGmf(productos.getExentaGmf());
             productos.setFechaModificacion(LocalDateTime.now());
-            return reposotory.save(productos);
+            return repository.save(productos);
         } else {
             throw new RuntimeException("Producto no encontrado con id " + id);
         }
@@ -64,35 +65,48 @@ public class ProductoService implements IProductoService {
 
     @Override
     public void delete(Long id) {
-        reposotory.deleteById(id);
+        repository.deleteById(id);
     }
 
     @Override
     public void activateProducto(Long id) {
-        Optional<Producto> productoOpt = reposotory.findById(id);
+        Optional<Producto> productoOpt = repository.findById(id);
         if (productoOpt.isPresent()) {
             Producto producto = productoOpt.get();
             producto.setEstadoCuenta(EstadoCuenta.ACTIVA);
             producto.setFechaModificacion(LocalDateTime.now());
-            reposotory.save(producto);
+            repository.save(producto);
         } else {
-            throw new RuntimeException("Producto no encontrado con id " + id);
+            throw new EntityNotFoundException("Producto no encontrado con id " + id);
         }
-
     }
 
     @Override
-    public void desactivateProducto(Long id) {
-        Optional<Producto> productoOpt = reposotory.findById(id);
+    public void deactivateProducto(Long id) {
+        Optional<Producto> productoOpt = repository.findById(id);
         if (productoOpt.isPresent()) {
             Producto producto = productoOpt.get();
             producto.setEstadoCuenta(EstadoCuenta.INACTIVA);
             producto.setFechaModificacion(LocalDateTime.now());
-            reposotory.save(producto);
+            repository.save(producto);
         } else {
-            throw new RuntimeException("Producto no encontrado con id " + id);
+            throw new EntityNotFoundException("Producto no encontrado con id " + id);
         }
-
+    }
+    @Override
+    public void cancelateProducto(Long id) {
+        Optional<Producto> productoOpt = repository.findById(id);
+        if (productoOpt.isPresent()) {
+            Producto producto = productoOpt.get();
+            if (producto.getSaldo() != 0) {
+                throw new IllegalStateException("No se puede cancelar una cuenta con saldo diferente a 0");
+            }
+            producto.setEstadoCuenta(EstadoCuenta.CANCELADA);
+            producto.setFechaModificacion(LocalDateTime.now());
+            repository.save(producto);
+        } else {
+            throw new EntityNotFoundException("Producto no encontrado con id " + id);
+        }
     }
 
     private String generarNumeroCuenta(TipoCuenta tipoCuenta) {

@@ -19,6 +19,7 @@ public interface IProductoService {
 
     void activateProducto (Long id);
 
-    void desactivateProducto(Long id);
+    void deactivateProducto(Long id);
 
+    void cancelateProducto(Long id);
 }

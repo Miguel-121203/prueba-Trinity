@@ -2,8 +2,10 @@ package com.example.prueba.trinity.fs.Controller;
 
 import com.example.prueba.trinity.fs.Entity.Producto;
 import com.example.prueba.trinity.fs.IService.IProductoService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -48,15 +50,35 @@ public class ProductoController {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/{id}/activar")
-    public ResponseEntity<Void> activate(@PathVariable Long id) {
-        service.activateProducto(id);
-        return ResponseEntity.noContent().build();
+    @PutMapping("/activar/{id}")
+    public ResponseEntity<String> activateProducto(@PathVariable Long id) {
+        try {
+            service.activateProducto(id);
+            return ResponseEntity.ok("Producto activado exitosamente");
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Producto no encontrado");
+        }
     }
 
-    @PutMapping("/{id}/deactivar")
-    public ResponseEntity<Void> deactivate(@PathVariable Long id) {
-        service.desactivateProducto(id);
-        return ResponseEntity.noContent().build();
+    @PutMapping("/desactivar/{id}")
+    public ResponseEntity<String> deactivateProducto(@PathVariable Long id) {
+        try {
+            service.deactivateProducto(id);
+            return ResponseEntity.ok("Producto desactivado exitosamente");
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Producto no encontrado");
+        }
+    }
+
+    @PutMapping("/cancelar/{id}")
+    public ResponseEntity<String> cancelateProducto(@PathVariable Long id) {
+        try {
+            service.cancelateProducto(id);
+            return ResponseEntity.ok("Producto cancelado exitosamente");
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Producto no encontrado");
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 }

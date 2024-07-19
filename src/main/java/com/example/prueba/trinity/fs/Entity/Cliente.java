@@ -22,7 +22,7 @@ public class Cliente {
     @NotBlank(message = "El tipo de identificacion debe ser obligatorio")
     private String tipoId;
 
-    @NotNull                    (message = "Numero de identificacion debe ser obligatorio")
+    @NotNull(message = "Numero de identificacion debe ser obligatorio")
     private int numId;
 
     @Size(min = 2, message = "El nombre debe tener al menos 2 caracteres")
