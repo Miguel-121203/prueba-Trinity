@@ -46,12 +46,15 @@ public class Cliente {
     @Column()
     private LocalDateTime fechaModificacion;
 
+    //INICIALIZAMOS ESTOS DATOS PARA CUMPLIR LOS REQUERIMIENTOS
+    // EL PREPERSIST SIRVE PARA INICIALIZAR LOS DATOS ANTES DE CREAR LA PERSISTENCIA EN LA BASE DE DATOS
     @PrePersist
     protected void onCreate() {
         this.fechaCreacion = LocalDateTime.now();
         this.fechaModificacion = LocalDateTime.now();
     }
 
+    // EN ESTA ACTUALIZAMOS LA FECHA DE MODIFICACION JUSTO ANTES DE HACER LA PERSISTENCIA DE NUEVO EN LA BASE DE DATOS
     @PreUpdate
     protected void onUpdate() {
         this.fechaModificacion = LocalDateTime.now();

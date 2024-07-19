@@ -20,16 +20,19 @@ public class ClienteService implements IClienteService {
     @Autowired
     private IClienteRepository repository;
 
+    // ENCONTRAR TODOS LOS CLIENTES
     @Override
     public List<Cliente> findAll() {
         return repository.findAll();
     }
 
+    // BUSCAR POR ID
     @Override
     public Optional<Cliente> findById(Long id) {
         return repository.findById(id);
     }
 
+    //GUARDAR O CREAR CLIENTE PERO ESTE NO DEBE SER MENOR DE EDAD POR ESO SE LE PONE UNA VALIDACION
     @Override
     public Cliente save(@Valid Cliente cliente) {
         if (!isOfAge(cliente.getFechaNacimiento())) {
@@ -40,10 +43,12 @@ public class ClienteService implements IClienteService {
         return repository.save(cliente);
     }
 
+    //METODO DE VALIDACION PARA QUE EL CLIENTE SEA MAYOR DE EDAD
     private boolean isOfAge(LocalDate fechaNacimiento) {
         return Period.between(fechaNacimiento, LocalDate.now()).getYears() >= 18;
     }
 
+    //ACTUALIZAR
     @Override
     public Cliente update(@Valid Cliente clienteDetalles, Long id) {
         Optional<Cliente> clienteOpt = repository.findById(id);
@@ -63,6 +68,7 @@ public class ClienteService implements IClienteService {
 
     }
 
+    //BORRAR O ELIMINAR
     @Override
     public void delete(Long id) {
         Optional<Cliente> clienteOpt = repository.findById(id);

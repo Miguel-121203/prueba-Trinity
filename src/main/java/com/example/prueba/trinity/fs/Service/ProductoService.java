@@ -20,16 +20,19 @@ public class ProductoService implements IProductoService {
     @Autowired
     private IProductoRepository repository;
 
+    //BUSCAR TODOS
     @Override
     public List<Producto> findAll() {
         return repository.findAll();
     }
 
+    //BUSCAR POR ID
     @Override
     public Optional<Producto> findById(Long id) {
         return repository.findById(id);
     }
 
+    //GUARDAR O CREAR PRODUCTO CON SU RESPECTIVA VALIDACION
     @Override
     public Producto save(Producto producto) {
         if (producto.getTipoCuenta() == TipoCuenta.AHORRO && producto.getSaldo() < 0) {
@@ -47,6 +50,7 @@ public class ProductoService implements IProductoService {
 
 
 
+    // ACTUALIZAR
     @Override
     public Producto update(Producto producto, Long id) {
         Optional<Producto> productoOpt = repository.findById(id);
@@ -63,11 +67,14 @@ public class ProductoService implements IProductoService {
         }
     }
 
+    //BORRAR O ELIMINAR
     @Override
     public void delete(Long id) {
         repository.deleteById(id);
     }
 
+
+    //ACTIVAR UNA CUENTA O PRODUCTO YA SEA AHORRO O CORRIENTE
     @Override
     public void activateProducto(Long id) {
         Optional<Producto> productoOpt = repository.findById(id);
@@ -81,6 +88,7 @@ public class ProductoService implements IProductoService {
         }
     }
 
+    //DESACTIVAR UNA CUENTA O PRODUCTO YA SEA AHORRO O CORRIENTE
     @Override
     public void deactivateProducto(Long id) {
         Optional<Producto> productoOpt = repository.findById(id);
@@ -93,6 +101,8 @@ public class ProductoService implements IProductoService {
             throw new EntityNotFoundException("Producto no encontrado con id " + id);
         }
     }
+
+    //CANCELAR CUENTAS SOLO SI ESTAS TIENEN UN SALDO IGUAL A 0
     @Override
     public void cancelateProducto(Long id) {
         Optional<Producto> productoOpt = repository.findById(id);
@@ -108,6 +118,8 @@ public class ProductoService implements IProductoService {
             throw new EntityNotFoundException("Producto no encontrado con id " + id);
         }
     }
+
+    //METODO DE GENERAR NUMERO DE CUENTA ALEATORIAMENTE IGUAL QUE EN LA CLASE PRODUCTO EN LA CARPETA ENTITY
 
     private String generarNumeroCuenta(TipoCuenta tipoCuenta) {
         String prefix = tipoCuenta == TipoCuenta.AHORRO ? "53" : "33";

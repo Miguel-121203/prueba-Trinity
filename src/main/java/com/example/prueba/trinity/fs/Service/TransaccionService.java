@@ -23,6 +23,8 @@ public class TransaccionService implements ITransaccionService {
     private ITransaccionRepository transaccionRepository;
 
 
+    // ACA SE REALIZA EL SERVICIO PARA LA CONSIGNACION EL CUAL MIRAMOS SI ES PRODUCTO O CUENTA ESTA PRESENTE Y TRAEMOS EL SALDO
+    // Y A ESE MISMO LE INGRESAMOS EL SALGO DESEADO
     @Override
     @Transactional
     public void consignacion(TransaccionRequestDto transaccionRequestDto) {
@@ -43,6 +45,8 @@ public class TransaccionService implements ITransaccionService {
         }
     }
 
+
+    // SERVICIO PARA RETIRAR SALDO DE UNA CUENTA, TRAEMOS EL PRODUCTO Y DEL SALDO RESTAMOS LO QUE QUEREMOS RETIRAR
     @Override
     @Transactional
     public void retiro(TransaccionRequestDto transaccionRequestDto) {
@@ -66,6 +70,7 @@ public class TransaccionService implements ITransaccionService {
         }
     }
 
+    // ACA HACEMOS LA TRANSFERENCIA
     @Override
     @Transactional
     public void transferencia(TransaccionRequestDto transaccionRequestDto) {
@@ -77,29 +82,13 @@ public class TransaccionService implements ITransaccionService {
             Producto productoDestino = productoDestinoOpt.get();
 
             if (productoOrigen.getSaldo() >= transaccionRequestDto.getMonto()) {
-                // Debitar el monto de la cuenta origen
+                // Descontar el monto de la cuenta origen
                 productoOrigen.setSaldo(productoOrigen.getSaldo() - transaccionRequestDto.getMonto());
                 productoRepository.save(productoOrigen);
 
-                // Acreditar el monto a la cuenta destino
+                // Agregar el monto a la cuenta destino
                 productoDestino.setSaldo(productoDestino.getSaldo() + transaccionRequestDto.getMonto());
                 productoRepository.save(productoDestino);
-
-                // Crear transacción de débito
-                Transaccion transaccionDebito = new Transaccion();
-                transaccionDebito.setTipoTransaccion(TipoTransaccion.TRANSFERENCIA);
-                transaccionDebito.setMonto(transaccionRequestDto.getMonto());
-                transaccionDebito.setProductoOrigen(productoOrigen);
-                transaccionDebito.setProductoDestino(productoDestino);
-                transaccionRepository.save(transaccionDebito);
-
-                // Crear transacción de crédito
-                Transaccion transaccionCredito = new Transaccion();
-                transaccionCredito.setTipoTransaccion(TipoTransaccion.TRANSFERENCIA);
-                transaccionCredito.setMonto(transaccionRequestDto.getMonto());
-                transaccionCredito.setProductoOrigen(productoOrigen);
-                transaccionCredito.setProductoDestino(productoDestino);
-                transaccionRepository.save(transaccionCredito);
             } else {
                 throw new RuntimeException("Saldo insuficiente en la cuenta origen");
             }

@@ -23,14 +23,14 @@ public class Producto {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
+    @NotNull(message = "El tipo de cuenta no puede estar vacio")
     @Enumerated(EnumType.STRING)
     private TipoCuenta tipoCuenta;
 
     @Column(unique = true, length = 10)
     private String numeroCuenta;
 
-    @NotNull
+    @NotNull(message = "El estado de la cuenta no puede ser nulo")
     @Enumerated(EnumType.STRING)
     private EstadoCuenta estadoCuenta;
 
@@ -53,6 +53,9 @@ public class Producto {
     @JoinColumn(name = "cliente_id", nullable = false)
     private Cliente cliente;
 
+
+    //INICIALIZAMOS ESTOS DATOS PARA CUMPLIR LOS REQUERIMIENTOS
+    // EL PREPERSIST SIRVE PARA INICIALIZAR LOS DATOS ANTES DE CREAR LA PERSISTENCIA EN LA BASE DE DATOS
     @PrePersist
     protected void onCreate() {
         this.fechaCreacion = LocalDateTime.now();
@@ -65,12 +68,15 @@ public class Producto {
         }
     }
 
+    // EN ESTA ACTUALIZAMOS LA FECHA DE MODIFICACION JUSTO ANTES DE HACER LA PERSISTENCIA DE NUEVO EN LA BASE DE DATOS
     @PreUpdate
     protected void onUpdate() {
         this.fechaModificacion = LocalDateTime.now();
     }
 
+    // ESTE METODO SIRVE PARA GENERAR EL NUMERO DE CUENTA EN AUTOMATICO
     private String generarNumeroCuenta(String prefijo) {
         return prefijo + String.format("%08d", (int) (Math.random() * 100000000));
     }
+
 }
