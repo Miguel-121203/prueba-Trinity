@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@CrossOrigin("localhost:4200")
 @RequestMapping("api/cliente")
 public class ClienteController {
 
