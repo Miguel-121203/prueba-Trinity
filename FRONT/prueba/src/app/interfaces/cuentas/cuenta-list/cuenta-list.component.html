@@ -1,0 +1,43 @@
+<h2>CUENTAS</h2>
+
+<div class="text-end">
+    <button class="btn btn-primary" routerLink="/cuenta-new">
+        NUEVA CUENTA
+    </button>
+</div>
+
+<table class="table container">
+    <thead class="text-center">
+      <tr>  
+        <th scope="col">ID</th>
+        <th scope="col">TIPO CUENTA</th>
+        <th scope="col">NUMERO CUENTA</th>
+        <th scope="col">ESTADO DE CUENTA</th>
+        <th scope="col">SALDO</th>
+        <th scope="col">EXENTA DE GMF</th>
+        <th scope="col">CLIENTE AGREGADO</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody class="text-center">
+        @for (cuenta of cuentas; track cuenta.id) {
+            <tr>
+                <th scope="row">{{cuenta.id}}</th>
+                <td>{{cuenta.tipoCuenta}}</td>
+                <td>{{cuenta.numeroCuenta}}</td>            
+                <td>{{cuenta.estadoCuenta}}</td>
+                <td>{{cuenta.saldo}}</td>
+                <td>{{cuenta.exentaGmf}}</td>
+                <td>{{cuenta.cliente}}</td>
+                <td>
+                    <button class="btn btn-outline-warning" [routerLink]="[cuenta.id, 'editcuenta']">EDITAR</button>
+                    <button class="btn btn-outline-danger" (click)="deleteCuenta(cuenta)">ELIMINAR</button>
+                </td>        
+            </tr>
+
+        }
+
+      
+
+    </tbody>
+  </table>
