@@ -1,0 +1,56 @@
+<h2 class="mb-5 text-center">
+     @if (client) {
+        EDITAR
+     }@else {
+        NUEVO
+     } CLIENTE 
+    </h2>
+
+
+
+<div class="row row-cols-3 justify-content-center">
+   @if (form) {
+    <form [formGroup]="form" (ngSubmit)="save()">
+        <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label">TIPO ID</label>
+            <input type="text" class="form-control" id="exampleInputPassword1"
+            formControlName="tipoId">
+        </div>
+        <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label">NUMERO ID</label>
+            <input type="number" class="form-control" id="exampleInputPassword1"
+            formControlName="numId">
+        </div>
+        <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label">NOMBRE</label>
+            <input type="text" class="form-control" id="exampleInputPassword1"
+            formControlName="nombre">
+        </div>
+        <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label">APELLIDO</label>
+            <input type="text" class="form-control" id="exampleInputPassword1" 
+            formControlName="apellido">
+        </div>
+        <div class="mb-3">
+          <label for="exampleInputEmail1" class="form-label">CORREO ELECTRONICO</label>
+          <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
+          formControlName="correo">
+        </div>
+        <div class="mb-3">
+          <label for="exampleInputPassword1" class="form-label">FECHA DE NACIMIENTO</label>
+          <input type="date" class="form-control" id="exampleInputPassword1"
+          formControlName="fechaNacimiento">
+        </div>
+        <div class="text-end">
+            <button type="button" class="btn btn-danger" routerLink="/">CANCELAR</button>
+            <button type="submit" class="btn btn-success">
+             @if (client) {
+                ACTUALIZAR
+             }@else {
+                CREAR
+             }
+            </button>
+        </div>
+      </form>
+   }
+</div>

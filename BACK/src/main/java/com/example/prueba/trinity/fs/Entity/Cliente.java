@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Cliente {
+public class    Cliente {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -38,7 +38,7 @@ public class Cliente {
     private String correo;
 
     @Past(message = "La fecha de nacimiento debe de contar con fecha del pasado no con fechas futuras")
-    private LocalDate fechaNacimiento;
+        private LocalDate fechaNacimiento;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime fechaCreacion;

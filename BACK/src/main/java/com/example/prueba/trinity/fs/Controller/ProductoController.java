@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:4200")
 @RestController
-@CrossOrigin("localhost:4200")
 @RequestMapping("api/producto")
 public class ProductoController {
 
@@ -51,15 +51,15 @@ public class ProductoController {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/activar/{id}")
-    public ResponseEntity<String> activateProducto(@PathVariable Long id) {
-        try {
-            service.activateProducto(id);
-            return ResponseEntity.ok("Producto activado exitosamente");
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Producto no encontrado");
+        @PutMapping("/activar/{id}")
+        public ResponseEntity<String> activateProducto(@PathVariable Long id) {
+            try {
+                service.activateProducto(id);
+                return ResponseEntity.ok("Producto activado exitosamente");
+            } catch (EntityNotFoundException e) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Producto no encontrado");
+            }
         }
-    }
 
     @PutMapping("/desactivar/{id}")
     public ResponseEntity<String> deactivateProducto(@PathVariable Long id) {
