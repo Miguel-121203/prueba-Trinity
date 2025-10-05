@@ -20,16 +20,16 @@ public class ClienteService implements IClienteService {
     @Autowired
     private IClienteRepository repository;
 
-    // ENCONTRAR TODOS LOS CLIENTES
+    // ENCONTRAR TODOS LOS CLIENTES ACTIVOS
     @Override
     public List<Cliente> findAll() {
-        return repository.findAll();
+        return repository.findByActivoTrue();
     }
 
-    // BUSCAR POR ID
+    // BUSCAR POR ID SOLO SI ESTÁ ACTIVO
     @Override
     public Optional<Cliente> findById(Long id) {
-        return repository.findById(id);
+        return repository.findByIdAndActivoTrue(id);
     }
 
     //GUARDAR O CREAR CLIENTE PERO ESTE NO DEBE SER MENOR DE EDAD POR ESO SE LE PONE UNA VALIDACION
@@ -51,32 +51,38 @@ public class ClienteService implements IClienteService {
     //ACTUALIZAR
     @Override
     public Cliente update(@Valid Cliente clienteDetalles, Long id) {
-        Optional<Cliente> clienteOpt = repository.findById(id);
-        if (clienteOpt.isPresent()) {
-            Cliente cliente = clienteOpt.get();
-            cliente.setTipoId(clienteDetalles.getTipoId());
-            cliente.setNumId(clienteDetalles.getNumId());
-            cliente.setNombre(clienteDetalles.getNombre());
-            cliente.setApellido(clienteDetalles.getApellido());
-            cliente.setCorreo(clienteDetalles.getCorreo());
-            cliente.setFechaNacimiento(clienteDetalles.getFechaNacimiento());
-            cliente.setFechaModificacion(LocalDateTime.now());
-            return repository.save(cliente);
+        Optional<Cliente> clienteExistente = repository.findById(id);
+        if (clienteExistente.isPresent()) {
+
+            Cliente clienteActualizado = Cliente.builder()
+                    .tipoId(clienteDetalles.getTipoId())
+                    .numId(clienteDetalles.getNumId())
+                    .nombre(clienteDetalles.getNombre())
+                    .apellido(clienteDetalles.getApellido())
+                    .correo(clienteDetalles.getCorreo())
+                    .fechaNacimiento(clienteDetalles.getFechaNacimiento())
+                    .fechaModificacion(LocalDateTime.now())
+                    .build();
+
+
+            return repository.save(clienteActualizado);
         } else {
             throw new RuntimeException("Cliente no encontrado con id " + id);
         }
 
     }
 
-    //BORRAR O ELIMINAR
+    //BORRADO LÓGICO - MARCAR COMO INACTIVO
     @Override
     public void delete(Long id) {
         Optional<Cliente> clienteOpt = repository.findById(id);
         if (clienteOpt.isPresent()) {
-            repository.deleteById(id);
+            Cliente cliente = clienteOpt.get();
+            cliente.setActivo(false);
+            cliente.setFechaModificacion(LocalDateTime.now());
+            repository.save(cliente);
         } else {
             throw new RuntimeException("Cliente no encontrado con id " + id);
         }
-
     }
 }

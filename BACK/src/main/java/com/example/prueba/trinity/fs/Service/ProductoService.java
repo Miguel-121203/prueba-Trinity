@@ -20,16 +20,16 @@ public class ProductoService implements IProductoService {
     @Autowired
     private IProductoRepository repository;
 
-    //BUSCAR TODOS
+    //BUSCAR TODOS LOS PRODUCTOS ACTIVOS
     @Override
     public List<Producto> findAll() {
-        return repository.findAll();
+        return repository.findByActivoTrue();
     }
 
-    //BUSCAR POR ID
+    //BUSCAR POR ID SOLO SI ESTÁ ACTIVO
     @Override
     public Optional<Producto> findById(Long id) {
-        return repository.findById(id);
+        return repository.findByIdAndActivoTrue(id);
     }
 
     //GUARDAR O CREAR PRODUCTO CON SU RESPECTIVA VALIDACION
@@ -67,10 +67,18 @@ public class ProductoService implements IProductoService {
         }
     }
 
-    //BORRAR O ELIMINAR
+    //BORRADO LÓGICO - MARCAR COMO INACTIVO
     @Override
     public void delete(Long id) {
-        repository.deleteById(id);
+        Optional<Producto> productoOpt = repository.findById(id);
+        if (productoOpt.isPresent()) {
+            Producto producto = productoOpt.get();
+            producto.setActivo(false);
+            producto.setFechaModificacion(LocalDateTime.now());
+            repository.save(producto);
+        } else {
+            throw new RuntimeException("Producto no encontrado con id " + id);
+        }
     }
 
 

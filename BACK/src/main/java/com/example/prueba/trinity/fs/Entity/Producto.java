@@ -53,6 +53,8 @@ public class Producto {
     @JoinColumn(name = "cliente_id", nullable = false)
     private Cliente cliente;
 
+    @Column(nullable = false)
+    private Boolean activo;
 
     //INICIALIZAMOS ESTOS DATOS PARA CUMPLIR LOS REQUERIMIENTOS
     // EL PREPERSIST SIRVE PARA INICIALIZAR LOS DATOS ANTES DE CREAR LA PERSISTENCIA EN LA BASE DE DATOS
@@ -60,6 +62,7 @@ public class Producto {
     protected void onCreate() {
         this.fechaCreacion = LocalDateTime.now();
         this.fechaModificacion = LocalDateTime.now();
+        this.activo = true;
         if (this.tipoCuenta == TipoCuenta.AHORRO) {
             this.estadoCuenta = EstadoCuenta.ACTIVA;
             this.numeroCuenta = generarNumeroCuenta("53");

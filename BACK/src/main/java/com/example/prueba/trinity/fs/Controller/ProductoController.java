@@ -16,70 +16,71 @@ import java.util.List;
 @RequestMapping("api/producto")
 public class ProductoController {
 
-    @Autowired
-    private IProductoService service;
+  @Autowired
+  private IProductoService service;
 
 
-    @GetMapping()
-    public ResponseEntity<List<Producto>> findAll() {
-        List<Producto> productos = service.findAll();
-        return ResponseEntity.ok(productos);
+  @GetMapping()
+  public ResponseEntity<List<Producto>> findAll() {
+    List<Producto> productos = service.findAll();
+    return ResponseEntity.ok(productos);
+  }
+
+  @GetMapping("/{id}")
+  public ResponseEntity<Producto> findById(@PathVariable Long id) {
+    return service.findById(id)
+            .map(ResponseEntity::ok)
+            .orElse(ResponseEntity.notFound().build());
+  }
+
+  @PostMapping()
+  public ResponseEntity<Producto> save(@Valid @RequestBody Producto producto) {
+    Producto newProducto = service.save(producto);
+    return ResponseEntity.ok(newProducto);
+  }
+
+  @PutMapping("/{id}")
+  public ResponseEntity<Producto> update(@PathVariable Long id,
+                                         @Valid @RequestBody Producto productoDetails) {
+    Producto updatedProducto = service.update(productoDetails, id);
+    return ResponseEntity.ok(updatedProducto);
+  }
+
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Void> delete(@PathVariable Long id) {
+    service.delete(id);
+    return ResponseEntity.noContent().build();
+  }
+
+  @PutMapping("/activar/{id}")
+  public ResponseEntity<String> activateProducto(@PathVariable Long id) {
+    try {
+      service.activateProducto(id);
+      return ResponseEntity.ok("Producto activado exitosamente");
+    } catch (EntityNotFoundException e) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Producto no encontrado");
     }
+  }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Producto> findById(@PathVariable Long id) {
-        return service.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+  @PutMapping("/desactivar/{id}")
+  public ResponseEntity<String> deactivateProducto(@PathVariable Long id) {
+    try {
+      service.deactivateProducto(id);
+      return ResponseEntity.ok("Producto desactivado exitosamente");
+    } catch (EntityNotFoundException e) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Producto no encontrado");
     }
+  }
 
-    @PostMapping()
-    public ResponseEntity<Producto> save(@Valid @RequestBody Producto producto) {
-        Producto newProducto = service.save(producto);
-        return ResponseEntity.ok(newProducto);
+  @PutMapping("/cancelar/{id}")
+  public ResponseEntity<String> cancelateProducto(@PathVariable Long id) {
+    try {
+      service.cancelateProducto(id);
+      return ResponseEntity.ok("Producto cancelado exitosamente");
+    } catch (EntityNotFoundException e) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Producto no encontrado");
+    } catch (IllegalStateException e) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Producto> update(@PathVariable Long id, @Valid @RequestBody Producto productoDetails) {
-        Producto updatedProducto = service.update(productoDetails, id);
-        return ResponseEntity.ok(updatedProducto);
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        service.delete(id);
-        return ResponseEntity.noContent().build();
-    }
-
-        @PutMapping("/activar/{id}")
-        public ResponseEntity<String> activateProducto(@PathVariable Long id) {
-            try {
-                service.activateProducto(id);
-                return ResponseEntity.ok("Producto activado exitosamente");
-            } catch (EntityNotFoundException e) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Producto no encontrado");
-            }
-        }
-
-    @PutMapping("/desactivar/{id}")
-    public ResponseEntity<String> deactivateProducto(@PathVariable Long id) {
-        try {
-            service.deactivateProducto(id);
-            return ResponseEntity.ok("Producto desactivado exitosamente");
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Producto no encontrado");
-        }
-    }
-
-    @PutMapping("/cancelar/{id}")
-    public ResponseEntity<String> cancelateProducto(@PathVariable Long id) {
-        try {
-            service.cancelateProducto(id);
-            return ResponseEntity.ok("Producto cancelado exitosamente");
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Producto no encontrado");
-        } catch (IllegalStateException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
-    }
+  }
 }
